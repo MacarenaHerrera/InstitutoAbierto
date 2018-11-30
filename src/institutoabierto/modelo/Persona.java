@@ -28,6 +28,10 @@ public class Persona {
         this.dni = dni;
         this.celular = celular;
     }
+    
+    public Persona(){
+        id_persona=-1;
+    }
 
     public int getId_persona() {
         return id_persona;

@@ -15,38 +15,41 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  *
  * @author Maqui's
  */
-public class PersonaData {
-    private Connection connection = null;
+public class CursoData {
+   private Connection connection = null;
 
-    public PersonaData(Conexion conexion) {
+    public CursoData(Conexion conexion) {
         try {
             connection = conexion.getConexion();
         } catch (SQLException ex) {
-            Logger.getLogger(PersonaData.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CursoData.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void inscribirPersona (Persona persona){
+    public void altaCurso (Curso curso){
         try {
-        String sql = "INSERT INTO persona (nombrePersona, dni, celular) VALUES ( ? , ? , ? );";
+        String sql = "INSERT INTO curso (nombreCurso, descripcion, costo, cupoMax) VALUES ( ? , ? , ? , ? );";
         
             try (PreparedStatement statement = connection.prepareStatement (sql, Statement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, persona.getNombrePersona());
-                statement.setInt(2, persona.getDni());
-                statement.setInt(3, persona.getCelular());
+                statement.setString(1, curso.getNombreCurso());
+                statement.setString(2, curso.getDescripcion());
+                statement.setDouble(3, curso.getCosto());
+statement.setInt(4, curso.getCupoMax());
+
                 
                 statement.executeUpdate();
                 
                 ResultSet resultset = statement.getGeneratedKeys();
                 
                 if (resultset.next()) {
-                    persona.setId_persona(resultset.getInt(1));
+                    curso.setId_curso (resultset.getInt(1));
                 } else {
-                    System.out.println("No se puede obtener el id de persona");
+                    System.out.println("No se puede obtener el id de curso");
                 }
             }
             
@@ -54,13 +57,13 @@ public class PersonaData {
             Logger.getLogger(PersonaData.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void borrarPersona(int id_persona){
+    public void borrarCurso(int id_curso){
     try {
             
-            String sql = "DELETE FROM persona WHERE id_persona =?;";
+            String sql = "DELETE FROM curso WHERE id_curso =?;";
 
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, id_persona);
+            statement.setInt(1, id_curso);
            
             
             statement.executeUpdate();
@@ -69,56 +72,57 @@ public class PersonaData {
             statement.close();
     
         } catch (SQLException ex) {
-            System.out.println("Error al insertar un persona: " + ex.getMessage());
+            System.out.println("Error al insertar un curso: " + ex.getMessage());
         }
         
     
     }
-    public List<Persona> obtenerPersona(){
-        List<Persona> personas = new ArrayList<Persona>();
+    public List<Curso> obtenerCurso(){
+        List<Curso> cursos = new ArrayList<Curso>();
 
         try {
-            String sql = "SELECT * FROM persona;";
+            String sql = "SELECT * FROM curso;";
             
             PreparedStatement statement = connection.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
-            Persona persona;
+            Curso curso;
             while(resultSet.next()){
-                persona = new Persona();
-                persona.setId_persona(resultSet.getInt("id"));
-                persona.setNombrePersona(resultSet.getString("nombre"));
-                persona.setDni(resultSet.getInt("dni"));
-                persona.setCelular(resultSet.getInt("celular"));
+                curso = new Curso();
+                curso.setId_curso(resultSet.getInt("id"));
+                curso.setNombreCurso(resultSet.getString("nombre"));
+                curso.setDescripcion(resultSet.getString("descripcion"));
+                curso.setCosto(resultSet.getDouble("costo"));
+curso.setCupoMax(resultSet.getInt("cupoMax"));
 
-                personas.add(persona);
+                cursos.add(curso);
             }      
             statement.close();
         } catch (SQLException ex) {
-            System.out.println("Error al obtener los personas: " + ex.getMessage());
+            System.out.println("Error al obtener los cursos: " + ex.getMessage());
         }
         
         
-        return personas;
+        return cursos;
     }
-    public void actualizarPersona(Persona persona){
+    public void actualizarCurso(Curso curso){
     
         try {
             
-            String sql = "UPDATE alumno SET nombrePersona = ?, dni = ? , celular =? WHERE id = ?;";
+            String sql = "UPDATE curso SET nombreCurso = ?, descripcion = ? , costo =?,  cupoMax =?  WHERE id = ?;";
 
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, persona.getNombrePersona());
-            statement.setInt(2, persona.getDni());
-            statement.setInt(3,persona.getCelular());
-            statement.setInt(4, persona.getId_persona());
-            statement.executeUpdate();
+                statement.setString(1, curso.getNombreCurso());
+                statement.setString(2, curso.getDescripcion());
+                statement.setDouble(3, curso.getCosto());
+statement.setInt(4, curso.getCupoMax());
+               statement.executeUpdate();
             
           
             statement.close();
     
         } catch (SQLException ex) {
-            System.out.println("Error al insertar un alumno: " + ex.getMessage());
+            System.out.println("Error al insertar un curso: " + ex.getMessage());
         }
     
-    }
+    } 
 }

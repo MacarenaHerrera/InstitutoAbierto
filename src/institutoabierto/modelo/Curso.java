@@ -33,7 +33,10 @@ public class Curso {
         this.costo = costo;
         this.cupoMax = cupoMax;
     }
-
+     public Curso(){
+        id_curso=-1;
+    }
+    
     public int getId_curso() {
         return id_curso;
     }
