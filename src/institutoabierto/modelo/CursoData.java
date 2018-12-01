@@ -33,14 +33,14 @@ public class CursoData {
 
     public void altaCurso (Curso curso){
         try {
-        String sql = "INSERT INTO curso (nombreCurso, descripcion, costo, cupoMax) VALUES ( ? , ? , ? , ? );";
+        String sql = "INSERT INTO curso (nombreCurso, descripcion, costo, cupoMax,id_persona) VALUES ( ? , ? , ? , ?, ? );";
         
             try (PreparedStatement statement = connection.prepareStatement (sql, Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, curso.getNombreCurso());
                 statement.setString(2, curso.getDescripcion());
                 statement.setDouble(3, curso.getCosto());
-statement.setInt(4, curso.getCupoMax());
-
+                statement.setInt(4, curso.getCupoMax());
+                statement.setInt(5, curso.getId_persona());
                 
                 statement.executeUpdate();
                 
