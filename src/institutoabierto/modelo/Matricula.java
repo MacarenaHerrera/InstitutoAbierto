@@ -32,7 +32,9 @@ public class Matricula {
         this.fecha = fecha;
         this.costo = costo;
     }
-
+public Matricula(){
+    id_matricula=-1;
+}
     public int getId_matricula() {
         return id_matricula;
     }
