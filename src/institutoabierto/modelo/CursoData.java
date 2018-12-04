@@ -40,7 +40,7 @@ public class CursoData {
                 statement.setString(2, curso.getDescripcion());
                 statement.setDouble(3, curso.getCosto());
                 statement.setInt(4, curso.getCupoMax());
-                statement.setInt(5, curso.getId_persona());
+                statement.setInt(5, curso.getPersona().getId_persona());
                 
                 statement.executeUpdate();
                 
@@ -125,4 +125,37 @@ statement.setInt(4, curso.getCupoMax());
         }
     
     } 
+    public Curso buscarCurso(int id_curso){
+    Curso curso =null;
+    try {
+            
+            String sql = "SELECT * FROM curso WHERE id_curso =?;";
+
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, id_curso);
+           
+            
+            ResultSet resultSet=statement.executeQuery();
+            
+            while(resultSet.next()){
+                curso = new Curso();
+                curso.setId_curso(resultSet.getInt("id_curso"));
+                curso.setNombreCurso(resultSet.getString("nombrePersona"));
+                curso.setDescripcion(resultSet.getString("descripcion"));
+                curso.setCosto(resultSet.getDouble("costo"));
+                curso.setCupoMax(resultSet.getInt("cupoMax"));
+                
+            }      
+            statement.close();
+            
+            
+            
+            
+    
+        } catch (SQLException ex) {
+            System.out.println("Error al insertar un alumno: " + ex.getMessage());
+        }
+        
+        return curso;
+    }
 }

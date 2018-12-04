@@ -121,4 +121,40 @@ public class PersonaData {
         }
     
     }
+    public Persona buscarPersona(int id_persona){
+    Persona persona=null;
+    try {
+            
+            String sql = "SELECT * FROM persona WHERE id_persona =?;";
+
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, id_persona);
+           
+            
+            ResultSet resultSet=statement.executeQuery();
+            
+            while(resultSet.next()){
+                persona = new Persona();
+                persona.setId_persona(resultSet.getInt("id_persona"));
+                persona.setNombrePersona(resultSet.getString("nombrePersona"));
+                persona.setDni(resultSet.getInt("dni"));
+                persona.setCelular(resultSet.getInt("celular"));
+
+                
+            }      
+            statement.close();
+            
+            
+            
+            
+    
+        } catch (SQLException ex) {
+            System.out.println("Error al insertar un alumno: " + ex.getMessage());
+        }
+        
+        return persona;
+    }
+    
 }
+
+

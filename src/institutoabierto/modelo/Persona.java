@@ -1,21 +1,12 @@
 package institutoabierto.modelo;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- *
- * @author Maqui's
- */
 public class Persona {
-    private int id_persona;
+    private int id_persona=-1;
     private String nombrePersona;
     private int dni;
     private int celular;
-
+    
     public Persona(int id_persona, String nombrePersona, int dni, int celular) {
         this.id_persona = id_persona;
         this.nombrePersona = nombrePersona;
@@ -28,11 +19,12 @@ public class Persona {
         this.dni = dni;
         this.celular = celular;
     }
-    
-    public Persona(){
-        id_persona=-1;
-    }
 
+    public Persona() {
+      
+    }
+    
+    
     public int getId_persona() {
         return id_persona;
     }
@@ -65,5 +57,8 @@ public class Persona {
         this.celular = celular;
     }
     
-    
+    @Override
+    public String toString(){
+        return id_persona +"-"+ nombrePersona; 
+ }
 }

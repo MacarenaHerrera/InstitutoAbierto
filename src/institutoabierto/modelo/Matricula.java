@@ -14,18 +14,18 @@ import java.time.LocalDate;
  * @author Maqui's
  */
 public class Matricula {
-    private int id_matricula;
+    private int id_matricula=-1;
     private LocalDate fecha;
     private double costo;
-    private int id_persona;
-    private int id_curso;
+    private Persona persona;
+    private Curso curso;
 
-    public Matricula(int id_matricula, LocalDate fecha, double costo, int id_persona, int id_curso) {
+    public Matricula(int id_matricula, LocalDate fecha, double costo,Persona persona,Curso curso ) {
         this.id_matricula = id_matricula;
         this.fecha = fecha;
         this.costo = costo;
-        this.id_persona = id_persona;
-        this.id_curso = id_curso;
+        this.persona=persona;
+        this.curso=curso;
     }
 
     public Matricula(LocalDate fecha, double costo) {
@@ -33,7 +33,7 @@ public class Matricula {
         this.costo = costo;
     }
 public Matricula(){
-    id_matricula=-1;
+
 }
     public int getId_matricula() {
         return id_matricula;
@@ -47,12 +47,12 @@ public Matricula(){
         return costo;
     }
 
-    public int getId_persona() {
-        return id_persona;
+    public Persona getPersona() {
+        return persona;
     }
 
-    public int getId_curso() {
-        return id_curso;
+    public Curso getCurso() {
+        return curso;
     }
 
     public void setId_matricula(int id_matricula) {
@@ -67,12 +67,16 @@ public Matricula(){
         this.costo = costo;
     }
 
-    public void setId_persona(int id_persona) {
-        this.id_persona = id_persona;
+    public void setPersona(Persona persona) {
+        this.persona=persona;
     }
 
-    public void setId_curso(int id_curso) {
-        this.id_curso = id_curso;
+    public void setCurso(Curso curso) {
+        this.curso=curso;
+    }
+
+    void getCurso(Curso curso) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 

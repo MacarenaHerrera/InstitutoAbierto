@@ -1,30 +1,21 @@
 package institutoabierto.modelo;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- *
- * @author Maqui's
- */
 public class Curso {
-    private int id_curso;
+    private int id_curso=-1;
     private String nombreCurso;
     private String descripcion;
     private double costo;
     private int cupoMax;
-    private int id_persona;
+    private Persona persona;
 
-    public Curso(int id_curso, String nombreCurso, String descripcion, double costo, int cupoMax, int id_persona) {
+    public Curso(int id_curso, String nombreCurso, String descripcion, double costo, int cupoMax,  Persona persona) {
         this.id_curso = id_curso;
         this.nombreCurso = nombreCurso;
         this.descripcion = descripcion;
         this.costo = costo;
         this.cupoMax = cupoMax;
-        this.id_persona = id_persona;
+        this.persona = persona;
     }
 
     public Curso(String nombreCurso, String descripcion, double costo, int cupoMax) {
@@ -34,7 +25,7 @@ public class Curso {
         this.cupoMax = cupoMax;
     }
      public Curso(){
-        id_curso=-1;
+       
     }
     
     public int getId_curso() {
@@ -77,13 +68,15 @@ public class Curso {
         this.cupoMax = cupoMax;
     }
 
-    public int getId_persona() {
-        return id_persona;
+    public Persona getPersona() {
+        return persona;
     }
 
-    public void setId_persona(int id_persona) {
-        this.id_persona = id_persona;
+    public void setPersona(Persona persona) {
+        this.persona = persona;
     }
+
+  
     
     
 }
