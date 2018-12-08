@@ -7,22 +7,23 @@ public class Curso {
     private String descripcion;
     private double costo;
     private int cupoMax;
-    private int id_persona;
-    public Curso(int id_curso, String nombreCurso, String descripcion, double costo, int cupoMax,  int id_persona) {
+    private Persona persona;
+    
+    public Curso(int id_curso, String nombreCurso, String descripcion, double costo, int cupoMax, Persona persona) {
         this.id_curso = id_curso;
         this.nombreCurso = nombreCurso;
         this.descripcion = descripcion;
         this.costo = costo;
         this.cupoMax = cupoMax;
-        this.id_persona=id_persona;
+        this.persona = persona;
     }
 
-    public Curso(String nombreCurso, String descripcion, double costo, int cupoMax,int id_persona) {
+    public Curso(String nombreCurso, String descripcion, double costo, int cupoMax, Persona persona) {
         this.nombreCurso = nombreCurso;
         this.descripcion = descripcion;
         this.costo = costo;
         this.cupoMax = cupoMax;
-        this.id_persona=id_persona;
+        this.persona = persona;
     }
      public Curso(){
        id_curso=-1;
@@ -68,12 +69,12 @@ public class Curso {
         this.cupoMax = cupoMax;
     }
 
-    public int getId_persona() {
-        return id_persona;
+    public Persona getPersona() {
+        return persona;
     }
 
-    public void setId_persona(int id_persona) {
-        this.id_persona=id_persona;
+    public void setPersona(Persona persona) {
+        this.persona = persona;
     }
 
   

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -74,32 +75,33 @@ public class PersonaData {
         
     
     }
-    public List<Persona> obtenerPersona(){
-        List<Persona> personas = new ArrayList<Persona>();
-
-        try {
-            String sql = "SELECT * FROM persona;";
-            
-            PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-            Persona persona;
-            while(resultSet.next()){
-                persona = new Persona();
-                persona.setId_persona(resultSet.getInt("id"));
-                persona.setNombrePersona(resultSet.getString("nombre"));
-                persona.setDni(resultSet.getInt("dni"));
-                persona.setCelular(resultSet.getInt("celular"));
-
-                personas.add(persona);
-            }      
-            statement.close();
-        } catch (SQLException ex) {
-            System.out.println("Error al obtener los personas: " + ex.getMessage());
-        }
+    public DefaultTableModel obtenerPersona(){
+        DefaultTableModel listaPersonas;
         
+        String[] titulosP = {"id_persona", "nombre", "dni", "celular"};
+        String[] datosP = new String [4];
         
-        return personas;
+        listaPersonas = new DefaultTableModel  (null, titulosP);
+            try{
+           String sql = "SELECT * FROM persona;";
+           
+           PreparedStatement statement = connection.prepareStatement(sql);
+           ResultSet resultSet = statement.executeQuery();
+           while(resultSet.next()){
+               datosP [0] = resultSet.getString("id_persona");
+               datosP [1] = resultSet.getString("nombre");
+               datosP [2] = resultSet.getString("dni");
+               datosP [3] = resultSet.getString("celular");
+               
+               listaPersonas.addRow(datosP);
+           }
+        statement.close();  
+           } catch (SQLException ex) {
+                   System.out.println("Error al obtener los cursos: " + ex.getMessage());
+                   }
+            return listaPersonas;
     }
+  
     public void actualizarPersona(Persona persona){
     
         try {

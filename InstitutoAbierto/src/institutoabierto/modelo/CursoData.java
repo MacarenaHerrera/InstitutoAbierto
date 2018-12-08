@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 
 /**
@@ -40,7 +41,7 @@ public class CursoData {
                 statement.setString(2, curso.getDescripcion());
                 statement.setDouble(3, curso.getCosto());
                 statement.setInt(4, curso.getCupoMax());
-                statement.setInt(5, curso.getId_persona());
+                statement.setInt(5, curso.getPersona().getId_persona());
                 
                 statement.executeUpdate();
                 
@@ -72,38 +73,41 @@ public class CursoData {
             statement.close();
     
         } catch (SQLException ex) {
-            System.out.println("Error al insertar un curso: " + ex.getMessage());
+            System.out.println("Error al eliminar un curso: " + ex.getMessage());
         }
         
     
     }
-    public List<Curso> obtenerCurso(){
-        List<Curso> cursos = new ArrayList<Curso>();
-
-        try {
-            String sql = "SELECT * FROM curso;";
-            
-            PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-            Curso curso;
-            while(resultSet.next()){
-                curso = new Curso();
-                curso.setId_curso(resultSet.getInt("id_curso"));
-                curso.setNombreCurso(resultSet.getString("nombre"));
-                curso.setDescripcion(resultSet.getString("descripcion"));
-                curso.setCosto(resultSet.getDouble("costo"));
-curso.setCupoMax(resultSet.getInt("cupoMax"));
-
-                cursos.add(curso);
-            }      
-            statement.close();
-        } catch (SQLException ex) {
-            System.out.println("Error al obtener los cursos: " + ex.getMessage());
-        }
-        
-        
-        return cursos;
-    }
+    public DefaultTableModel obtenerCurso() {
+      
+           DefaultTableModel listaCursos;
+           String[] titulos = {"id_curso", "nombreCurso", "descripcion", "costo", "cupoMax"};
+           String [] datos = new String [5];
+           
+           listaCursos = new DefaultTableModel  (null, titulos);
+            try {
+           String sql = "SELECT * FROM curso;";
+           
+           PreparedStatement statement = connection.prepareStatement(sql);
+           ResultSet resultSet = statement.executeQuery();
+           while(resultSet.next()){
+               datos [0] = resultSet.getString("id_curso");
+               datos [1] = resultSet.getString("nombreCurso");
+               datos [2] = resultSet.getString("descripcion");
+               datos [3] = resultSet.getString("costo");
+               datos [4] = resultSet.getString("cupoMax");
+               listaCursos.addRow(datos);
+           }
+               statement.close();  
+           } catch (SQLException ex) {
+                   System.out.println("Error al obtener los cursos: " + ex.getMessage());
+                   }
+           
+           
+           return listaCursos;
+           
+              }
+    
     public void actualizarCurso(Curso curso){
     
         try {
@@ -114,14 +118,14 @@ curso.setCupoMax(resultSet.getInt("cupoMax"));
                 statement.setString(1, curso.getNombreCurso());
                 statement.setString(2, curso.getDescripcion());
                 statement.setDouble(3, curso.getCosto());
-statement.setInt(4, curso.getCupoMax());
+               statement.setInt(4, curso.getCupoMax());
                statement.executeUpdate();
             
           
             statement.close();
     
         } catch (SQLException ex) {
-            System.out.println("Error al insertar un curso: " + ex.getMessage());
+            System.out.println("Error al actualizar un curso: " + ex.getMessage());
         }
     
     } 
@@ -153,7 +157,7 @@ statement.setInt(4, curso.getCupoMax());
             
     
         } catch (SQLException ex) {
-            System.out.println("Error al insertar un alumno: " + ex.getMessage());
+            System.out.println("Error al buscar un alumno: " + ex.getMessage());
         }
         
         return curso;
