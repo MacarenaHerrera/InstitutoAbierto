@@ -20,7 +20,7 @@ public class Matricula {
     private Persona persona;
     private Curso curso;
 
-    public Matricula(int id_matricula, LocalDate fecha, double costo,Persona persona,Curso curso ) {
+    public Matricula(int id_matricula, LocalDate fecha, double costo,Persona persona,Curso curso) {
         this.id_matricula = id_matricula;
         this.fecha = fecha;
         this.costo = costo;
@@ -28,13 +28,16 @@ public class Matricula {
         this.curso=curso;
     }
 
-    public Matricula(LocalDate fecha, double costo) {
+    public Matricula(LocalDate fecha, double costo,Persona persona,Curso curso) {
         this.fecha = fecha;
         this.costo = costo;
+        this.persona=persona;
+        this.curso=curso;
     }
+    
 public Matricula(){
+   }
 
-}
     public int getId_matricula() {
         return id_matricula;
     }
@@ -75,7 +78,7 @@ public Matricula(){
         this.curso=curso;
     }
 
-   
-    
-
-}
+   public String toString(){
+       return id_matricula+"-"+persona+curso;
+   }
+ }

@@ -2,10 +2,16 @@ package institutoabierto.modelo;
 
 
 public class Persona {
-    private int id_persona;
+    private int id_persona=-1;
     private String nombrePersona;
     private int dni;
     private int celular;
+    
+    public Persona(String nombrePersona, int dni, int celular) {
+        this.nombrePersona = nombrePersona;
+        this.dni = dni;
+        this.celular = celular;
+    }
     
     public Persona(int id_persona, String nombrePersona, int dni, int celular) {
         this.id_persona = id_persona;
@@ -14,15 +20,8 @@ public class Persona {
         this.celular = celular;
     }
 
-    public Persona(String nombrePersona, int dni, int celular) {
-        this.nombrePersona = nombrePersona;
-        this.dni = dni;
-        this.celular = celular;
-    }
-
-    public Persona() {
-      id_persona=-1;
-    }
+        public Persona() {
+          }
     
     
     public int getId_persona() {
@@ -56,6 +55,8 @@ public class Persona {
     public void setCelular(int celular) {
         this.celular = celular;
     }
-    
+    public String toString() {
+        return id_persona+"-"+nombrePersona;
+    }
  
 }

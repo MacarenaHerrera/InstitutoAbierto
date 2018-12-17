@@ -7,11 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.DefaultTableModel;
+
 
 
 public class MatriculaData {
@@ -74,50 +76,70 @@ public class MatriculaData {
             System.out.println("Error al eliminar matricula: " + ex.getMessage());
         }
     }
-    //FALTA CONSULTAR LAS CLAVES FORÁNEAS DE LA MATRÍCULA: ID_PERSONA e ID_CURSO.
-   public DefaultTableModel obtenerMatricula() {      
-DefaultTableModel listaMatriculas;
-           String[] titulosM = {"id_matricula", "fecha",  "costo"};
-           String[] datosM = new String [3];
+    
+   public List<Matricula> listaMatriculas(){
+        List<Matricula> matriculas = new ArrayList<Matricula>();
 
-            listaMatriculas = new DefaultTableModel  (null, titulosM);
-            
         try {
-            String sql = "SELECT * FROM matricula;";
+            String sql = "SELECT  * FROM matricula;";
+            
             PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery();
+            
+            Matricula matricula;
             while(resultSet.next()){
-                datosM [0] = resultSet.getString("id_matricula");
-                datosM [1] = resultSet.getString("fecha");
-                datosM [2] = resultSet.getString("costo");
-                listaMatriculas.addRow(datosM);
-            }
-                statement.close();
-            } catch (SQLException ex) {
-                    System.out.println("Error al obtener las matriculas: " + ex.getMessage());
-                    }
-            return listaMatriculas;
-               }
+                matricula = new Matricula();
+                matricula.setId_matricula(resultSet.getInt("id_matricula"));
+                matricula.setFecha(resultSet.getDate("fecha").toLocalDate());
+                matricula.setCosto(resultSet.getDouble("costo"));
+               
+                 Persona  
+                    persona=buscarPersona(resultSet.getInt("dni"));
+                    matricula.setPersona(persona);
+              
+                Curso 
+                    curso=buscarCurso(resultSet.getString("nombreCurso"));
+                    matricula.setCurso(curso);
 
+                matriculas.add(matricula);
+            }      
+            statement.close();
+        } catch (SQLException ex) {
+            System.out.println("Error al obtener las matriculas: " + ex.getMessage());
+        }
+        
+        return matriculas;    
+    }
+         
+   //obtenerMatriculasXPersona() 
    
-   //obtenerMatriculasXPersona() ARROJA LOS MISMOS DATOS QUE OBTENER MATRICULA?
-   
-   public DefaultTableModel obtenerMatriculasXPersona(){
-        DefaultTableModel matriculasXPersona;
-        String [] titulosMXP = {"id_matricula", "fecha", "costo"};
-        String [] datosMXP = new String [3];
+  public List <Matricula> obtenerMatriculaxPersona(int id_persona){
+        List <Matricula> matriculas = new ArrayList <> ();
 
-        matriculasXPersona = new DefaultTableModel (null, titulosMXP);
         try {
-            String sql = "SELECT  * FROM matricula";
+            String sql = "SELECT  * FROM matricula WHERE id_persona = ?;";
             PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setInt(1, id_persona);
             
             ResultSet resultSet = statement.executeQuery();
-             while(resultSet.next()){
-               datosMXP [0] = resultSet.getString("id_matricula");
-               datosMXP [1] = resultSet.getString("fecha");
-               datosMXP [2] = resultSet.getString("costo");
-               matriculasXPersona.findColumn(sql);
+            
+            Matricula matricula;
+            
+            while(resultSet.next()){
+                matricula = new Matricula();
+                matricula.setId_matricula(resultSet.getInt("id_matricula"));
+                matricula.setFecha(resultSet.getDate("fecha").toLocalDate());
+                matricula.setCosto(resultSet.getDouble("costo"));
+                
+            Persona  
+                persona=buscarPersona(resultSet.getInt("id_persona"));
+                matricula.setPersona(persona);
+              
+            Curso 
+                    curso=buscarCurso(resultSet.getString("nombreCurso"));
+                    matricula.setCurso(curso);
+                
+                matriculas.add(matricula);
                 
             }      
             statement.close();
@@ -125,36 +147,38 @@ DefaultTableModel listaMatriculas;
         } catch (SQLException ex) {
             System.out.println("Error al obtener las matriculas: " + ex.getMessage());
         }
-       return matriculasXPersona; 
+       return matriculas; 
     }    
-        
-    public DefaultTableModel obtenerCursosMatriculados(){
-       DefaultTableModel cursosMatriculados;
-       String [] titulosMC = {"id_curso", "nombreCurso", "descripcion", "costo", "cupoMax"};
-       String [] datosMC = new String [5];
-       
-       cursosMatriculados = new DefaultTableModel (null, titulosMC);
-       try {
-           String sql = "SELECT * FROM curso;";
-           
-           PreparedStatement statement = connection.prepareStatement(sql);
-           ResultSet resultSet = statement.executeQuery();
-           while(resultSet.next()){
-               datosMC [0] = resultSet.getString("id_curso");
-               datosMC [1] = resultSet.getString("nombreCurso");
-               datosMC [2] = resultSet.getString("descripcion");
-               datosMC [3] = resultSet.getString("costo");
-               datosMC [4] = resultSet.getString("cupoMax");
-               cursosMatriculados.addRow(datosMC);
-           }
-               statement.close();  
-           } catch (SQLException ex) {
-                   System.out.println("Error al obtener los cursos: " + ex.getMessage());
-                   }
-   return cursosMatriculados;
-   }
-   
-     
+   public List<Curso> obtenerMatriculaNoCursadas(int id_curso){
+        List<Curso> cursos = new ArrayList<Curso>();
+
+        try {
+                 String sql = "Select * from curso where id not in "
+                    + "(select id_curso from cursada where id_persona =?);";
+
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id_curso);
+            
+            ResultSet resultSet = statement.executeQuery();
+            Curso curso;
+            while(resultSet.next()){
+                curso = new Curso();
+                curso.setId_curso(resultSet.getInt("id_curso"));
+                curso.setNombreCurso(resultSet.getString("nombrecurso"));
+                curso.setDescripcion(resultSet.getString("descripcion"));
+                curso.setCosto(resultSet.getDouble("costo"));
+                curso.setCupoMax(resultSet.getInt("cupoMax"));
+
+                cursos.add(curso);
+            }      
+            statement.close();
+        } catch (SQLException ex) {
+            System.out.println("Error al obtener los cursos: " + ex.getMessage());
+        }
+       return cursos; 
+    }
+  
+  
 public void actualizarMatricula(Matricula matricula){
     
         try {
@@ -184,10 +208,10 @@ public void actualizarMatricula(Matricula matricula){
         return personadata.buscarPersona(dni);
     }
     
-    public Curso buscarCurso(int id_curso){
+    public Curso buscarCurso(String nombreCurso){
     
         CursoData cursodata=new CursoData(conexion);
-        return cursodata.buscarCurso(id_curso);
+        return cursodata.buscarCurso(nombreCurso);
     }
 }
 
