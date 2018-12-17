@@ -2,7 +2,7 @@ package institutoabierto.modelo;
 
 
 public class Curso {
-    private int id_curso;
+    private int id_curso=-1;
     private String nombreCurso;
     private String descripcion;
     private double costo;
@@ -25,8 +25,16 @@ public class Curso {
         this.cupoMax = cupoMax;
         this.persona = persona;
     }
-     public Curso(){
-       id_curso=-1;
+     public Curso(int id_curso, String nombreCurso, String descripcion, double costo, int cupoMax) {
+        this.nombreCurso = nombreCurso;
+        this.descripcion = descripcion;
+        this.costo = costo;
+        this.cupoMax = cupoMax;
+        this.id_curso = id_curso;
+            }
+    
+    public Curso(){
+       
     }
     
     public int getId_curso() {
@@ -76,8 +84,10 @@ public class Curso {
     public void setPersona(Persona persona) {
         this.persona = persona;
     }
+    public String toString(){
+        return id_curso+"-"+nombreCurso;
+    }
 
-  
-    
-    
 }
+    
+    

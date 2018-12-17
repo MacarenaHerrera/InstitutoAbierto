@@ -23,16 +23,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CursoData {
    private Connection connection = null;
+private Conexion conexion;
 
     public CursoData(Conexion conexion) {
         try {
+            this.conexion=conexion;
             connection = conexion.getConexion();
         } catch (SQLException ex) {
             Logger.getLogger(CursoData.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void altaCurso (Curso curso){
+//Ingresa un curso
+    public void resgitrarCurso (Curso curso){
         try {
         String sql = "INSERT INTO curso (nombreCurso, descripcion, costo, cupoMax , id_persona) VALUES ( ? , ? , ? , ? , ? );";
         
@@ -41,7 +43,8 @@ public class CursoData {
                 statement.setString(2, curso.getDescripcion());
                 statement.setDouble(3, curso.getCosto());
                 statement.setInt(4, curso.getCupoMax());
-                statement.setInt(5, curso.getPersona().getId_persona());
+                
+               statement.setInt(5, curso.getPersona().getId_persona());
                 
                 statement.executeUpdate();
                 
@@ -55,9 +58,10 @@ public class CursoData {
             }
             
         } catch (SQLException ex) {
-            Logger.getLogger(PersonaData.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error al insertar un curso: "+ ex.getMessage());
         }
     }
+    //BORRA UN CURSO A PARTIR DE SU ID
     public void borrarCurso(int id_curso){
     try {
             
@@ -65,63 +69,65 @@ public class CursoData {
 
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, id_curso);
-           
-            
+                       
             statement.executeUpdate();
-            
-            
+                        
             statement.close();
     
         } catch (SQLException ex) {
             System.out.println("Error al eliminar un curso: " + ex.getMessage());
         }
-        
-    
+            
     }
-    public DefaultTableModel obtenerCurso() {
-      
-           DefaultTableModel listaCursos;
-           String[] titulos = {"id_curso", "nombreCurso", "descripcion", "costo", "cupoMax"};
-           String [] datos = new String [5];
-           
-           listaCursos = new DefaultTableModel  (null, titulos);
-            try {
+    
+    //OBTIENE UNA LISTA DE TODOS LOS CURSOS YA INRESADOS
+    public List <Curso> obtenerCursos() {
+        List <Curso> cursos = new ArrayList <>();
+        
+        try {
            String sql = "SELECT * FROM curso;";
            
            PreparedStatement statement = connection.prepareStatement(sql);
            ResultSet resultSet = statement.executeQuery();
+           Curso curso;
            while(resultSet.next()){
-               datos [0] = resultSet.getString("id_curso");
-               datos [1] = resultSet.getString("nombreCurso");
-               datos [2] = resultSet.getString("descripcion");
-               datos [3] = resultSet.getString("costo");
-               datos [4] = resultSet.getString("cupoMax");
-               listaCursos.addRow(datos);
+               curso = new Curso();
+              curso.setId_curso(resultSet.getInt("id_curso"));
+              curso.setNombreCurso(resultSet.getString("nombreCurso"));
+              curso.setDescripcion(resultSet.getString("descripcion"));
+              curso.setCosto(resultSet.getDouble("costo"));
+              curso.setCupoMax(resultSet.getInt("cupoMax"));  
+              
+              cursos.add(curso);
            }
-               statement.close();  
+      
+            statement.close();  
            } catch (SQLException ex) {
                    System.out.println("Error al obtener los cursos: " + ex.getMessage());
                    }
-           
-           
-           return listaCursos;
+    
+            return cursos;
            
               }
     
+    //ACTUALIZA UN CURSO
     public void actualizarCurso(Curso curso){
     
         try {
             
-            String sql = "UPDATE curso SET nombreCurso = ?, descripcion = ? , costo =?,  cupoMax =?  WHERE id = ?;";
+            String sql = "UPDATE curso SET nombreCurso = ?, descripcion = ? , costo = ?,  cupoMax = ?  WHERE id_curso = ?;";
 
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            
                 statement.setString(1, curso.getNombreCurso());
                 statement.setString(2, curso.getDescripcion());
                 statement.setDouble(3, curso.getCosto());
                statement.setInt(4, curso.getCupoMax());
+               //statement.setInt (5, curso.getPersona().getId_persona());
+               statement.setInt(5, curso.getId_curso());
+               
                statement.executeUpdate();
-            
-          
+                      
             statement.close();
     
         } catch (SQLException ex) {
@@ -129,37 +135,42 @@ public class CursoData {
         }
     
     } 
-    public Curso buscarCurso(int id_curso){
+    //BUSCA UN CURSO A PARTIR DEL NOMBRE
+    public Curso buscarCurso(String nombreCurso){
     Curso curso =null;
     try {
             
-            String sql = "SELECT * FROM curso WHERE id_curso =?;";
+            String sql = "SELECT * FROM curso WHERE nombreCurso =?;";
 
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, id_curso);
-           
-            
+            statement.setString(1, nombreCurso);
+                       
             ResultSet resultSet=statement.executeQuery();
             
             while(resultSet.next()){
                 curso = new Curso();
                 curso.setId_curso(resultSet.getInt("id_curso"));
-                curso.setNombreCurso(resultSet.getString("nombrePersona"));
+                curso.setNombreCurso(resultSet.getString("nombreCurso"));
                 curso.setDescripcion(resultSet.getString("descripcion"));
                 curso.setCosto(resultSet.getDouble("costo"));
                 curso.setCupoMax(resultSet.getInt("cupoMax"));
                 
+                Persona persona = buscarPersonaxId(resultSet.getInt("id_persona"));
+                curso.setPersona (persona);
+                
             }      
             statement.close();
-            
-            
-            
-            
-    
+         
+         
         } catch (SQLException ex) {
-            System.out.println("Error al buscar un alumno: " + ex.getMessage());
+            System.out.println("Error al buscar un curso: " + ex.getMessage());
         }
         
         return curso;
     }
+    public Persona buscarPersonaxId(int id_persona){
+        PersonaData personadata = new PersonaData(conexion);
+        return personadata.buscarPersonaxId(id_persona);
+    }
+
 }

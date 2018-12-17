@@ -47,12 +47,11 @@ public class PersonaData {
                 if (resultset.next()) {
                     persona.setId_persona(resultset.getInt(1));
                 } else {
-                    System.out.println("No se puede obtener el id de persona");
+                    System.out.println("No se puede obtener la persona");
                 }
             }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(PersonaData.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SQLException ex) {
+            System.out.println("Error al inscribir una persona: " + ex.getMessage());
         }
     }
     public void borrarPersona(int id_persona){
@@ -62,77 +61,71 @@ public class PersonaData {
 
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, id_persona);
-           
-            
+                       
             statement.executeUpdate();
-            
-            
+                        
             statement.close();
     
         } catch (SQLException ex) {
             System.out.println("Error al insertar un persona: " + ex.getMessage());
         }
+                }
+    public List <Persona> obtenerPersonas() {
+        List <Persona> personas = new ArrayList <>();
         
-    
-    }
-    public DefaultTableModel obtenerPersona(){
-        DefaultTableModel listaPersonas;
-        
-        String[] titulosP = {"id_persona", "nombre", "dni", "celular"};
-        String[] datosP = new String [4];
-        
-        listaPersonas = new DefaultTableModel  (null, titulosP);
-            try{
+        try {
            String sql = "SELECT * FROM persona;";
            
            PreparedStatement statement = connection.prepareStatement(sql);
            ResultSet resultSet = statement.executeQuery();
+           Persona persona;
            while(resultSet.next()){
-               datosP [0] = resultSet.getString("id_persona");
-               datosP [1] = resultSet.getString("nombre");
-               datosP [2] = resultSet.getString("dni");
-               datosP [3] = resultSet.getString("celular");
-               
-               listaPersonas.addRow(datosP);
+               persona = new Persona();
+              persona.setId_persona(resultSet.getInt("id_persona"));
+              persona.setNombrePersona(resultSet.getString("nombrePersona"));
+              persona.setDni(resultSet.getInt("dni"));
+              persona.setCelular(resultSet.getInt("celular"));
+                            
+              personas.add(persona);
            }
-        statement.close();  
+      
+            statement.close();  
            } catch (SQLException ex) {
                    System.out.println("Error al obtener los cursos: " + ex.getMessage());
                    }
-            return listaPersonas;
-    }
-  
+    
+            return personas;
+           }
+    
     public void actualizarPersona(Persona persona){
     
         try {
             
-            String sql = "UPDATE alumno SET nombrePersona = ?, dni = ? , celular =? WHERE id = ?;";
-
+            String sql = "UPDATE persona SET nombrePersona=?, dni=? , celular=? WHERE id_persona=?;";
+           
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, persona.getNombrePersona());
             statement.setInt(2, persona.getDni());
-            statement.setInt(3,persona.getCelular());
+            statement.setInt(3, persona.getCelular());
             statement.setInt(4, persona.getId_persona());
             statement.executeUpdate();
-            
-          
+                      
             statement.close();
     
         } catch (SQLException ex) {
-            System.out.println("Error al insertar un alumno: " + ex.getMessage());
+            System.out.println("Error al actualizar una persona: " + ex.getMessage());
         }
     
     }
-    public Persona buscarPersona(int id_persona){
+    public Persona buscarPersona(int dni){
     Persona persona=null;
     try {
             
-            String sql = "SELECT * FROM persona WHERE id_persona =?;";
+            String sql = "SELECT * FROM persona WHERE dni =?;";
 
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setInt(1, id_persona);
+            statement.setInt(1, dni);
            
-            
             ResultSet resultSet=statement.executeQuery();
             
             while(resultSet.next()){
@@ -142,21 +135,43 @@ public class PersonaData {
                 persona.setDni(resultSet.getInt("dni"));
                 persona.setCelular(resultSet.getInt("celular"));
 
-                
             }      
             statement.close();
             
-            
-            
-            
-    
         } catch (SQLException ex) {
-            System.out.println("Error al insertar un alumno: " + ex.getMessage());
+            System.out.println("Error al buscar un alumno: " + ex.getMessage());
         }
         
         return persona;
     }
-    
+
+     public Persona buscarPersonaxId(int id_persona){
+    Persona persona=null;
+    try {
+            
+            String sql = "SELECT * FROM persona WHERE id_persona =?;";
+
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, id_persona);
+           
+            ResultSet resultSet=statement.executeQuery();
+            
+            while(resultSet.next()){
+                persona = new Persona();
+                persona.setId_persona(resultSet.getInt("id_persona"));
+                persona.setNombrePersona(resultSet.getString("nombrePersona"));
+                persona.setDni(resultSet.getInt("dni"));
+                persona.setCelular(resultSet.getInt("celular"));
+
+            }      
+            statement.close();
+            
+        } catch (SQLException ex) {
+            System.out.println("Error al buscar un alumno: " + ex.getMessage());
+        }
+        
+        return persona;
+    }
 }
 
 
