@@ -27,16 +27,29 @@ public class InstitutoAbierto {
             Conexion conexion;
             conexion = new Conexion
                          ("jdbc:mysql://localhost/instituto_abierto", "root", "");
-           /* PersonaData personadata = new PersonaData (conexion);
+            PersonaData personadata = new PersonaData (conexion);
             
+           /*
+            PARA INSCRIBIR PERSONA
             Persona persona1 = new Persona ("Macarena Herrera", 38750019, 154749854);
             personadata.inscribirPersona(persona1);
             System.out.println("El id del nombre es: " + persona1.getId_persona());
+            
             CursoData cursodata=new CursoData(conexion);
             Curso curso1=new Curso ("matematica","esta bueno",150,20,1);
             cursodata.altaCurso(curso1);
             System.out.println("El id del nombre es: " + curso1.getId_curso());
-         */   
+            
+           PARA CONSULTAR PERSONA
+           personadata.listaPersonas().forEach(Persona->{System.out.println("ID: " + Persona.getId_persona());});
+           
+            PARA BORRAR PERSONA
+            Persona persona= new Persona();
+            persona.setId_persona(5);
+            persondadata.borrarPersona;
+            
+         */  
+                   
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(InstitutoAbierto.class.getName()).log(Level.SEVERE, null, ex);
         }
